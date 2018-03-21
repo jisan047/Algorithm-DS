@@ -1,0 +1,120 @@
+/**********************************************************************\
+|           _______  _     _____    ____   ___     _                   |
+|          |___   _|(_)   / ___/   / _  | |   \   | |                  |
+|              | |  | |  / /___   / /_| | | |\ \  | |                  |
+|           _  | |  | | /___  /  /  __  | | | \ \ | |                  |
+|           \ \| |  | | ___/ /  / /   | | | |  \ \| |                  |
+|            \___/  |_|/____/  /_/    |_| |_|   \___|                  |
+|                  Computer Science and Engineering                    |
+|  Bangabandhu Sheikh Mujibur Rahman Science and Technology University |
+|         devskill:jisancse||uva:jishan047||github:jisan047            |
+\**********************************************************************/
+
+                /********************\
+                |                    |
+                |    lets try.....   |
+                |                    |
+                \********************/
+
+#include<bits/stdc++.h>
+using namespace std;
+
+///pre-processing
+#define     gcd(a, b)       __gcd(a,b)
+#define     lcm(a, b)       (a * b) / gcd(a, b)
+#define     loop(i, n)      for(int i=0;i<n;i++)
+#define     all(x)          x.begin(),x.end()
+#define     mem(a, x)       memset(a,x,sizeof a)
+#define     endl            '\n'
+#define     ss              second
+#define     ff              first
+#define     TN              typename
+
+///input functions
+int Int(){int x;scanf("%d",&x);return x;}
+long long Long(){long long x;scanf("%lld",&x);return x;}
+double Double(){double x;scanf("%lf",&x);return x;}
+
+///input functions shorting
+#define Int Int()
+#define Long Long()
+#define Double Double()
+#define Float Float()
+
+///Constants
+const int N = (int) 1e5 + 5;
+const long long MOD = (int) 1e9 + 7;
+//Trying to do something.
+//()()()()()()()()() ..... ()()()()()()()()()()()()
+//~~~~~~~~~~~~~~~~~~~~~~Get Ready~~~~~~~~~~~~~~~~~~~~~
+
+///debugger
+
+///end
+
+// loading..................
+int arr[N];
+struct Node{
+    Node* left, *right;
+    int val;
+    Node(int _val = 0, Node* _left = NULL, Node* _right = NULL){
+        val = _val, left = _left, right = _right;
+    }
+    void build(int l, int r){
+        if(l == r){
+            val = arr[l];
+            return;
+        }
+        left = new Node();
+        right = new Node();
+        int mid = (l + r) >> 1;
+        left -> build(l, mid);
+        right -> build(mid + 1, r);
+        val = left -> val + right -> val;
+    }
+
+    Node* update(int l, int r, int idx, int v){
+        if(idx < l or idx > r)return this;
+        if(l == r){
+            Node* ret = new Node(val, left, right);
+            ret -> val += v;     
+            return ret;
+        }
+        int mid = (l + r) >> 1;
+        Node* ret = new Node(val);
+        ret -> left = left -> update(l, mid, idx, v);
+        ret -> right = right -> update(mid + 1, r, idx, v);
+        ret -> val = ret -> left -> val + ret -> right -> val;
+        return ret;
+    }
+    int query(int l, int r, int L, int R){
+        if(l > R or r < L)return 0;
+        if(l >= L and r <= R) return val;
+        int mid = (l + r) >> 1;
+        return left -> query(l, mid, L, R) + right -> query(mid + 1, r, L, R);
+    }
+
+}* root[N];
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    int n = Int;
+    for(int i = 1; i <= n; i++){
+        arr[i] = Int;
+    }
+    int ver = 0;
+    root[0] = new Node();
+    root[0] -> build(1, n);
+    int q = Int;
+    while(q--){
+        int t = Int, idx = Int, a = Int, b = Int;
+        if(t == 1){
+            root[++ver] = root[idx] -> update(1, n, a, b);
+        }
+        else{
+            cout << root[idx] -> query(1, n, a, b) << endl;
+        }
+    }
+    return 0;
+}
