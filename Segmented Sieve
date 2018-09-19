@@ -1,0 +1,113 @@
+/**********************************************************************\
+|           _______  _     _____    ____   ___     _                   |
+|          |___   _|(_)   / ___/   / _  | |   \   | |                  |
+|              | |  | |  / /___   / /_| | | |\ \  | |                  |
+|           _  | |  | | /___  /  /  __  | | | \ \ | |                  |
+|           \ \| |  | | ___/ /  / /   | | | |  \ \| |                  |
+|            \___/  |_|/____/  /_/    |_| |_|   \___|                  |
+|                  Computer Science and Engineering                    |
+|  Bangabandhu Sheikh Mujibur Rahman Science and Technology University |
+|         devskill:jisancse||uva:jishan047||github:jisan047            |
+\**********************************************************************/
+/*
+*Segmented Sieve
+*/
+                /********************\
+                |                    |
+                |    lets try.....   |
+                |                    |
+                \********************/
+
+#include<bits/stdc++.h>
+using namespace std;
+
+///pre-processing
+#define     gcd(a, b)       __gcd(a,b)
+#define     lcm(a, b)       (a * b) / gcd(a, b)
+#define     loop(i, n)      for(int i=0;i<n;i++)
+#define     all(x)          x.begin(),x.end()
+#define     mem(a, x)       memset(a,x,sizeof a)
+#define     endl            '\n'
+#define     ss              second
+#define     ff              first
+#define     TN              typename
+
+///input functions
+int Int(){int x;scanf("%d",&x);return x;}
+long long Long(){long long x;scanf("%lld",&x);return x;}
+double Double(){double x;scanf("%lf",&x);return x;}
+
+///input functions shorting
+#define Int Int()
+#define Long Long()
+#define Double Double()
+#define Float Float()
+
+///Constants
+const int N = 10 * (int) 1e5 + 5;
+const long long MOD = (int) 1e9 + 7;
+//Trying to do something.
+//()()()()()()()()() ..... ()()()()()()()()()()()()
+//~~~~~~~~~~~~~~~~~~~~~~Get Ready~~~~~~~~~~~~~~~~~~~~~
+
+///debugger
+
+///end
+
+// loading..................
+int isprime[N];
+int mark[N];
+
+vector<long long> primes;
+void sieve(){
+    isprime[0] = isprime[1] = 1;
+    long long limit = (sqrtl(N)) + 1LL;
+    for(long long i = 4LL; i <= N; i += 2LL)isprime[i] = 1;
+    for(long long i = 3LL; i <= N; i += 2LL){
+        if(!isprime[i]){
+            if(i <= limit){
+                for(long long j = i * i; j <= N; j += (i << 1LL)){
+                    isprime[j] = 1;
+                }
+            }
+        }
+    }
+    for(long long i = 2LL; i <= N; i++){
+        if(!isprime[i])primes.push_back(i);
+    }
+}
+
+int seg_seive(long long L, long long H){
+    mem(mark, 0);
+    long long cnt = 0;
+    if(L == 1LL) L++;
+    if(L > H) return cnt;
+    long long len = (long long)primes.size();
+    for(long long i = 0LL; i < len and primes[i] <= H; i++){
+        long long j = (L / primes[i]) * primes[i];
+        if(j < L) j += primes[i];
+        if(j < N and !isprime[j])j += primes[i];
+        for( ; j <= H; j += primes[i]){
+            if(j < L) break;
+            mark[j - L] = 1;
+        }
+    }
+    for(long long i = L; i <= H; i++){
+        if(i < L) break;
+        if(mark[i - L] == 0) cnt++;
+    }
+    return cnt;
+}
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+    int t = Int, cs = 0;
+    sieve();
+    while(t--){
+       int l = Long, r = Long;
+       printf("Case %d: %d\n", ++cs, seg_seive(l, r));
+    }
+    
+    return 0;
+}
